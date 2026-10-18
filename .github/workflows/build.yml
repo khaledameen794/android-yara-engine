@@ -36,7 +36,7 @@ jobs:
         run: python3 scripts/notices.py
       - name: Verify ARM64 ELF and release manifest
         run: python3 scripts/verify.py
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: android-arm64-capi
           path: dist/*
@@ -44,9 +44,26 @@ jobs:
           retention-days: 7
           compression-level: 0
 
+  verify_artifact:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: android-arm64-capi
+          path: dist
+      - name: Check publish artifact without publishing
+        run: python3 scripts/publish.py --check-only
+
   publish:
     if: inputs.publish && github.ref == 'refs/heads/main'
-    needs: build
+    needs: [build, verify_artifact]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -55,7 +72,7 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           persist-credentials: false
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: android-arm64-capi
           path: dist
