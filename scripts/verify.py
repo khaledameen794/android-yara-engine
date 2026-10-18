@@ -3,7 +3,7 @@ import hashlib,json,pathlib,re,subprocess,sys
 R=pathlib.Path(__file__).resolve().parents[1]; D=R/'dist'; p=json.loads((R/'pins.json').read_text())
 so=D/'libyara_x_capi.so'; hdr=D/'yara_x.h'; meta=json.loads((D/'metadata.json').read_text())
 if not so.is_file() or not hdr.is_file() or hdr.stat().st_size==0: raise SystemExit('Missing shared library or nonempty public header')
-ndk=pathlib.Path(__import__('os').environ.get('ANDROID_NDK_HOME',str(R/'build/ndk')))
+ndk=pathlib.Path(__import__('os').environ.get('ANDROID_NDK_HOME') or str(R/'build/ndk'))
 readelf=ndk/'toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-readelf'
 def run(*a): return subprocess.check_output([str(readelf),*a,str(so)],text=True,stderr=subprocess.STDOUT)
 h=run('-h')

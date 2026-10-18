@@ -32,7 +32,7 @@ def remote_license(kind):
     return cache.read_text()
 
 def main():
-    cargo_home = Path(os.environ.get('CARGO_HOME', str(Path.home() / '.cargo')))
+    cargo_home = Path(os.environ.get('CARGO_HOME') or str(Path.home() / '.cargo'))
     command = ['cargo', '+' + PINS['rust']['version'], 'tree', '--manifest-path', str(SOURCE / 'Cargo.toml'), '-p', 'yara-x-capi', '--locked', '--offline', '--target', PINS['target'], '--no-default-features', '--features', 'capi', '--edges', 'normal', '--prefix', 'none']
     tree = subprocess.check_output(command, cwd=ROOT, text=True)
     selected = {}
