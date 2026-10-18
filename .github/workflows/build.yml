@@ -1,0 +1,63 @@
+name: Build Android ARM64 C API
+
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish a new versioned GitHub Release after validation
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-arm64-builder
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust target
+        run: rustup toolchain install 1.97.1 --profile minimal --target aarch64-linux-android --no-self-update
+      - name: Verify and prepare pinned inputs
+        run: python3 scripts/bootstrap.py
+      - name: Cross-compile C API
+        run: bash scripts/build.sh
+      - name: Preserve original license notices and seal checksums
+        run: python3 scripts/notices.py
+      - name: Verify ARM64 ELF and release manifest
+        run: python3 scripts/verify.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: android-arm64-capi
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+
+  publish:
+    if: inputs.publish && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
+        with:
+          name: android-arm64-capi
+          path: dist
+      - name: Publish verified assets using only the job-scoped token
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python3 scripts/publish.py

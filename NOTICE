@@ -1,0 +1,17 @@
+android-yara-engine
+
+This repository contains build infrastructure, not an Android application,
+JNI wrapper, detection rule pack, or a malware verdict service.
+
+YARA-X upstream: https://github.com/VirusTotal/yara-x
+Upstream release: v1.21.0
+Upstream commit: 7b2637d4655155fdfaf68177edadb9a39406ece0
+YARA-X is distributed under BSD-3-Clause. The original upstream license and
+resolved Rust dependency notices accompany the release binary. The MIT license
+at the repository root covers this build infrastructure only; it does not
+relicense YARA-X, the Android NDK, Rust, or their dependencies.
+
+The C API feature configuration is changed by the small patch in patches/.
+No default analysis modules are enabled. The upstream engine implementation
+is otherwise unchanged. Initially only arm64-v8a / Android API 24+ is built.
+Cross-compilation and ELF checks are not Android runtime validation.

@@ -1,0 +1,20 @@
+{
+  "builder_version": "1.21.0-android.1",
+  "upstream": {
+    "version": "1.21.0",
+    "commit": "7b2637d4655155fdfaf68177edadb9a39406ece0",
+    "url": "https://codeload.github.com/VirusTotal/yara-x/tar.gz/7b2637d4655155fdfaf68177edadb9a39406ece0",
+    "sha256": "eb56df7fc97c52d6a758d040394cc52306c122674b3665b87329a544d4a70850",
+    "cargo_lock_sha256": "380dfeeb291f53d0d656a8af1a51c3d39cd41bff2031053a2f1fdcc3a61abf1e"
+  },
+  "rust": {"version": "1.97.1"},
+  "ndk": {
+    "version": "30.0.16248370",
+    "url": "https://dl.google.com/android/repository/android-ndk-r30-linux.zip",
+    "sha256": "753611f410d002cfcd3f3dc2ef49aad532089d3180b436c060a90bf0fcb64df2",
+    "sha1": "5107f898313790e449e87eee2183d9a20602dee9"
+  },
+  "target": "aarch64-linux-android",
+  "android_api": 24,
+  "abi": "arm64-v8a"
+}

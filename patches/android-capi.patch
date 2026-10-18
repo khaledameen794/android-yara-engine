@@ -1,0 +1,5 @@
+--- a/capi/Cargo.toml
++++ b/capi/Cargo.toml
+@@ -91 +91 @@
+-yara-x = { workspace = true, default-features = true }
++yara-x = { workspace = true, default-features = false, features = ["constant-folding", "exact-atoms", "fast-regexp"] }
